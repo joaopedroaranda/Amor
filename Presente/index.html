@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosso Amor</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Dancing+Script&display=swap'); /* Fonte cursiva para assinatura */
+
+        body {
+            margin: 0;
+            background: linear-gradient(to bottom, #fad9ce, #f7b8d9); /* Fundo gradiente suave */
+            color: #333;
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            padding: 20px;
+            z-index: 2;
+        }
+
+        #question {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #signature {
+            font-family: 'Dancing Script', cursive;
+            font-size: 40px;
+            color: #010101;
+            margin-top: 10px;
+        }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #000000;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 0 10px;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ff0766;
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        #love-meter {
+            margin-top: 30px;
+            width: 300px;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #love-fill {
+            height: 100%;
+            background-color: red;
+            width: 0%;
+            transition: width 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        #love-fill.glow {
+            box-shadow: 0 0 15px red;
+        }
+
+        #present {
+            display: none;
+            margin-top: 30px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #000000;
+        }
+
+        /* Animação de Confetes */
+        .confetti {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Heart_icon_red_hollow.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            animation: float 2s ease-in-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 1;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-200px) scale(1);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="question">Você me ama?</div>
+        
+        <div class="buttons">
+            <button id="yesButton">Sim</button>
+            <button id="noButton">Não</button>
+        </div>
+        <div id="love-meter">
+            <div id="love-fill"></div>
+        </div>
+        <div id="present">❤️ Clique aqui para ver seu presente! ❤️</div>
+        <div id="signature">Ass: João Pedro</div>
+    </div>
+
+    <script>
+        const phrasesYes = [
+            "Eu sabia! ❤️",
+            "Assim eu fico mais apaixonado!",
+            "Seu amor me faz tão bem!",
+            "O amor está aumentando!",
+            "Você é demais! 💖",
+            "Mais um pouco e o coração vai explodir de amor!",
+            "Você é meu tesouro!",
+            "Amor infinito!",
+            "Você me completa!",
+            "Estou derretendo de amor!",
+            "O amor está no ar!",
+            "Você me faz sorrir!",
+            "Isso é amor de verdade!",
+            "O coração está quase cheio!",
+            "Você é meu mundo!"
+        ];
+
+        const phrasesNo = [
+            "Você não tem opção kkk",
+            "Sério? Tenta de novo!",
+            "Ah, você me ama sim!",
+            "Não adianta resistir!",
+            "Clica em 'Sim' logo!",
+            "Não se faça de difícil!",
+            "Amor verdadeiro!",
+            "Vamos lá, você sabe que me ama!"
+        ];
+
+        let loveLevel = 0;
+        const maxLoveLevel = 15; // Número de vezes para preencher o coração
+
+        const questionElement = document.getElementById('question');
+        const loveFill = document.getElementById('love-fill');
+        const present = document.getElementById('present');
+
+        document.getElementById('yesButton').addEventListener('click', () => {
+            if (loveLevel < maxLoveLevel) {
+                loveLevel++;
+                loveFill.style.width = (loveLevel / maxLoveLevel * 100) + '%';
+                loveFill.classList.add('glow');
+                questionElement.innerText = phrasesYes[loveLevel - 1];
+
+                // Adicionar confetes
+                createConfetti();
+
+                if (loveLevel === maxLoveLevel) {
+                    questionElement.innerText = "Eu também te amo, por isso tenho um presente para você!";
+                    document.querySelector('.buttons').style.display = 'none';
+                    present.style.display = 'block';
+                }
+            }
+        });
+
+        document.getElementById('noButton').addEventListener('click', () => {
+            questionElement.innerText = phrasesNo[Math.floor(Math.random() * phrasesNo.length)];
+        });
+
+        present.addEventListener('click', () => {
+            window.location.href = 'carrossel.html';
+        });
+
+        // Função para criar confetes
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.left = Math.random() * 100 + 'vw';
+            document.body.appendChild(confetti);
+            setTimeout(() => {
+                confetti.remove();
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

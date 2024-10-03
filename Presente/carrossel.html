@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosso Aniversário de Namoro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
+        body {
+            margin: 0;
+            background: #f7f7f7;
+            color: #333;
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .gallery {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            width: 100%;
+            height: 60vh;
+            margin: 20px auto;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+        }
+
+        .photo-container {
+            display: flex;
+            transition: transform 1s ease;
+            height: 100%;
+        }
+
+        .photo-container img {
+            min-width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 15px;
+            background-color: #ffffff;
+        }
+
+        .caption {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(245, 148, 193, 0.7);
+            padding: 10px;
+            border-radius: 10px;
+            color: #000000;
+            font-size: 20px;
+            max-width: 80%;
+            text-align: center;
+        }
+
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 0, 153, 0.7);
+            color: white;
+            font-size: 24px;
+            border: none;
+            border-radius: 50%;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 1;
+            transition: background-color 0.3s ease;
+        }
+
+        .arrow:hover {
+            background-color: rgba(255, 0, 162, 0.9);
+        }
+
+        .arrow-left {
+            left: 10px;
+        }
+
+        .arrow-right {
+            right: 10px;
+        }
+
+        h1 {
+            font-size: 26px;
+            margin-top: 20px;
+            color: #000000;
+        }
+
+        #timer {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .time-box {
+            background-color: #ffe1ee;
+            padding: 20px;
+            margin: 0 10px;
+            border-radius: 10px;
+            text-align: center;
+            width: 100px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .time-box span {
+            display: block;
+        }
+
+        .time-box .value {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .time-box .label {
+            font-size: 14px;
+            color: #777;
+        }
+
+        .countdown {
+            margin-top: 20px;
+            color: #000000;
+            font-size: 18px;
+            padding: 10px;
+        }
+
+        #background-music {
+            margin-top: 20px;
+            outline: none;
+            width: 300px;
+        }
+
+        @media (max-width: 600px) {
+            .gallery {
+                height: 40vh;
+            }
+
+            .time-box {
+                width: 80px;
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="gallery">
+            <div class="photo-container" id="photoContainer">
+                <!-- Imagens serão carregadas dinamicamente via JavaScript -->
+            </div>
+            <button class="arrow arrow-left" id="arrowLeft">❮</button>
+            <button class="arrow arrow-right" id="arrowRight">❯</button>
+            <div class="caption" id="photoQuote"></div>
+        </div>
+
+        <h1>Nosso Aniversário de Namoro</h1>
+
+        <div id="timer">
+            <div class="time-box">
+                <span class="value" id="years">0</span>
+                <span class="label">Anos</span>
+            </div>
+            <div class="time-box">
+                <span class="value" id="months">0</span>
+                <span class="label">Meses</span>
+            </div>
+            <div class="time-box">
+                <span class="value" id="days">0</span>
+                <span class="label">Dias</span>
+            </div>
+            <div class="time-box">
+                <span class="value" id="hours">0</span>
+                <span class="label">Horas</span>
+            </div>
+        </div>
+
+        <div class="countdown" id="countdownMessage">
+            Faltam <span id="daysLeft">0</span> dias para o nosso próximo aniversário de namoro!
+        </div>
+
+        <!-- Player de música no final -->
+        <audio id="background-music" controls autoplay muted>
+            <source src="musica/1.mp3" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio.
+        </audio>
+    </div>
+
+    <script>
+        // Lista de frases de amor
+        const quotes = [
+            "O amor é a poesia dos sentidos. – Honoré de Balzac",
+            "Amar é mudar a alma de casa. – Mario Quintana",
+            "A medida do amor é amar sem medida. – Santo Agostinho",
+            "O amor é a força mais sutil do mundo. – Mahatma Gandhi",
+            "Amo como ama o amor. Não conheço nenhuma outra razão para amar senão amar. – Fernando Pessoa",
+            "O amor é a flor da vida, e floresce inesperadamente. – D. H. Lawrence",
+            "O amor não se vê com os olhos mas com o coração. – William Shakespeare",
+            "O amor é a única loucura de um sábio e a única sabedoria de um tolo. – William Shakespeare",
+            "Amor é fogo que arde sem se ver. – Luís de Camões",
+            "A melhor coisa para se agarrar na vida é um ao outro. – Audrey Hepburn",
+            "Onde há amor, há vida. – Mahatma Gandhi",
+            "Amor é uma palavra que significa muito, mas nem metade do que eu sinto por você. – Anônimo",
+            "O amor é composto de uma única alma habitando dois corpos. – Aristóteles",
+            "Você é a razão da minha felicidade. – Anônimo",
+            "O verdadeiro amor nunca se desgasta. Quanto mais se dá, mais se tem. – Antoine de Saint-Exupéry",
+            "Te amo, não só pelo que você é, mas pelo que sou quando estou com você. – Roy Croft",
+            "Amor não é algo que queremos sentir. É algo que sentimos sem querer. – Anônimo",
+            "Eu sei o que é amor porque é você. – Anônimo",
+            "Amar é... sentir na felicidade do outro a própria felicidade. – Gottfried Leibniz",
+            "Te amo... – João Pedro"
+        ];
+
+        // Carregar as fotos automaticamente
+        function loadPhotos() {
+            const photoContainer = document.getElementById('photoContainer');
+            for (let i = 1; i <= 20; i++) {
+                const img = document.createElement('img');
+                img.src = `fotos/${i}.jpg`;
+                img.alt = `Foto ${i}`;
+                photoContainer.appendChild(img);
+            }
+        }
+
+        // Função para calcular o tempo entre duas datas
+        function calculateTimeTogether(startDate) {
+            const now = new Date();
+            let years = now.getFullYear() - startDate.getFullYear();
+            let months = now.getMonth() - startDate.getMonth();
+            let days = now.getDate() - startDate.getDate();
+            let hours = now.getHours() - startDate.getHours();
+            
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            if (days < 0) {
+                months--;
+                const previousMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+                days += previousMonth;
+            }
+
+            if (hours < 0) {
+                days--;
+                hours += 24;
+            }
+
+            return { years, months, days, hours };
+        }
+
+        const startDate = new Date('2023-02-04T00:00:00');
+
+        function updateTimer() {
+            const timeTogether = calculateTimeTogether(startDate);
+            const { years, months, days, hours } = timeTogether;
+
+            document.getElementById('years').textContent = years;
+            document.getElementById('months').textContent = months;
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours;
+        }
+
+        // Função para calcular a contagem regressiva para o próximo aniversário de namoro
+        function calculateCountdown() {
+            const now = new Date();
+            const nextAnniversary = new Date(startDate);
+            nextAnniversary.setFullYear(now.getFullYear() + (now > startDate ? 1 : 0));
+            const difference = nextAnniversary - now;
+            const daysLeft = Math.ceil(difference / (1000 * 60 * 60 * 24));
+            document.getElementById('daysLeft').textContent = daysLeft;
+        }
+
+        setInterval(updateTimer, 1000);
+        calculateCountdown();
+
+        // Navegação na galeria
+        const photoContainer = document.getElementById('photoContainer');
+        let currentIndex = 0;
+
+        function updateScrollPosition() {
+            const offset = -currentIndex * 100;
+            photoContainer.style.transform = `translateX(${offset}%)`;
+            document.getElementById('photoQuote').textContent = quotes[currentIndex];
+        }
+
+        function toggleArrows() {
+            document.getElementById('arrowLeft').style.display = currentIndex === 0 ? 'none' : 'block';
+            document.getElementById('arrowRight').style.display = currentIndex === 19 ? 'none' : 'block';
+        }
+
+        document.getElementById('arrowLeft').addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateScrollPosition();
+                toggleArrows();
+            }
+        });
+
+        document.getElementById('arrowRight').addEventListener('click', () => {
+            if (currentIndex < 19) {
+                currentIndex++;
+                updateScrollPosition();
+                toggleArrows();
+            }
+        });
+
+        // Inicializar a galeria e carregar as fotos
+        loadPhotos();
+        toggleArrows();
+        updateScrollPosition();
+
+        // Tocar música automaticamente
+        window.addEventListener('load', () => {
+            const music = document.getElementById('background-music');
+    
+            // Tentar tocar o áudio em mudo
+            music.play().then(() => {
+                // Se a reprodução foi bem-sucedida, remover o mudo após um breve atraso
+                setTimeout(() => {
+                    music.muted = false;
+                }, 1000); // 1 segundo de atraso para remover o mute
+            }).catch(() => {
+                // Se falhar, pedir ao usuário para clicar na página para começar a música
+                document.body.addEventListener('click', () => {
+                    music.play();
+                    music.muted = false;
+                }, { once: true });
+            });
+        });
+    </script>
+</body>
+</html>
