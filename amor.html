@@ -11,7 +11,7 @@
             color: white;
             font-family: Arial, sans-serif;
             text-align: center;
-            overflow: hidden; /* Para esconder a rolagem da barra */
+            overflow-x: hidden; /* Para esconder a rolagem horizontal da galeria */
         }
 
         .container {
@@ -24,7 +24,7 @@
             justify-content: center;
             overflow: hidden; /* Oculta a barra de rolagem */
             width: 100vw; /* 100% da largura da tela */
-            height: calc(100vh - 150px); /* Altura da galeria */
+            height: 60vh; /* Altura da galeria */
             margin: 0 auto;
         }
 
@@ -37,7 +37,7 @@
 
         .photo-container img {
             width: 100vw; /* Cada imagem ocupa 100% da largura da tela */
-            height: 100vh; /* Cada imagem ocupa 100% da altura da tela */
+            height: 100%; /* Cada imagem ocupa 100% da altura da galeria */
             object-fit: cover; /* Cobre todo o contêiner, mantendo a proporção */
         }
 
@@ -102,6 +102,7 @@
         .text-section {
             margin-top: 20px;
             color: white;
+            font-size: 16px;
         }
 
         .text-section p {
@@ -219,6 +220,9 @@
             const offset = -currentIndex * 100; // Calculo do deslocamento em porcentagem
             photoContainer.style.transform = `translateX(${offset}vw)`; // Usando vw para ocupar toda a tela
         }
+
+        // Inicializa o contador ao carregar a página
+        updateTimer();
     </script>
 </body>
 </html>
